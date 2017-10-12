@@ -35,7 +35,7 @@ pm2.launchBus((err, bus) => {
   logger.info('PM2 connection established');
 
   bus.on('process:event', ({ at, event, process }) => {
-    const { name, pm_uptime, restart_time, status, versioning = {} } = process;
+    const { name, pm_uptime, restart_time, status, versioning } = process;
     const aggregation_key = `${name}-${pm_uptime}`;
     const tags = [
       `name:${name}`,
@@ -44,11 +44,11 @@ pm2.launchBus((err, bus) => {
 
     logger.info(`Received event '${event}' with status '${status}'`);
 
-    if (versioning.branch !== 'HEAD') {
+    if (versioning && versioning.branch !== 'HEAD') {
       tags.push(`branch:${versioning.branch}`);
     }
 
-    if (versioning.tags) {
+    if (versioning && versioning.tags) {
       tags.push(`version:${versioning.tags.join()}`);
     }
 
