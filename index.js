@@ -6,6 +6,7 @@
 
 const { StatsD } = require('hot-shots');
 const debugnyan = require('debugnyan');
+const path = require('path');
 const pm2 = require('pm2');
 const pmx = require('pmx');
 
@@ -35,21 +36,19 @@ pm2.launchBus((err, bus) => {
   logger.info('PM2 connection established');
 
   bus.on('process:event', ({ at, event, process }) => {
-    const { name, pm_uptime, restart_time, status, versioning } = process;
+    const { name, pm_cwd, pm_uptime, restart_time, status, versioning } = process;
     const aggregation_key = `${name}-${pm_uptime}`;
+    const { version } = require(path.resolve(pm_cwd, 'package.json'));
     const tags = [
       `name:${name}`,
-      `status:${status}`
+      `status:${status}`,
+      `version:${version}`
     ];
 
     logger.info(`Received event '${event}' with status '${status}'`);
 
     if (versioning && versioning.branch !== 'HEAD') {
       tags.push(`branch:${versioning.branch}`);
-    }
-
-    if (versioning && versioning.tags) {
-      tags.push(`version:${versioning.tags.join()}`);
     }
 
     // `delete` is triggered when an app is deleted from PM2.
