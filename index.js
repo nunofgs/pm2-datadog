@@ -14,7 +14,7 @@ const pmx = require('pmx');
  */
 
 const logger = debugnyan('pm2-datadog');
-const { global_tags: globalTags, host, interval = 10000, port } = pmx.initModule();
+const { global_tags: globalTags, host, interval, port } = pmx.initModule();
 const dogstatsd = new StatsD({ globalTags, host, port });
 const { CHECKS: { OK } } = dogstatsd;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -118,6 +118,6 @@ async function start() {
   await start();
 }
 
-logger.info({ host, port }, `Starting pm2-datadog`);
+logger.info({ globalTags, host, interval, port }, `Starting pm2-datadog`);
 
 start();

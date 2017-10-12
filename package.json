@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Forward application metrics and events to Datadog",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "changelog": "github-changelog-generator --future-release=$npm_package_version --owner=uphold --repo=koa-instance-digest > CHANGELOG.md",
     "lint": "eslint --cache .",
@@ -15,7 +15,7 @@
     "debugnyan": "^2.0.1",
     "hot-shots": "^4.7.0",
     "pm2": "^2.7.1",
-    "pmx": "^1.5.4"
+    "pmx": "^0.5.0"
   },
   "devDependencies": {
     "@uphold/github-changelog-generator": "0.4.1",
@@ -32,7 +32,13 @@
       "env": {
         "DEBUG": "*pm2-datadog*"
       },
-      "script": "src/index.js"
+      "script": "index.js"
     }
-  ]
+  ],
+  "config": {
+    "global_tags": [],
+    "host": "localhost",
+    "interval": 10000,
+    "port": 8125
+  }
 }

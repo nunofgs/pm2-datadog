@@ -688,7 +688,7 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-debug@2, debug@^2.1.2, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
+debug@2, debug@^2.1.2, debug@^2.2, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   dependencies:
@@ -2480,7 +2480,14 @@ pm2@^2.7.1:
   optionalDependencies:
     gkt "https://tgz.pm2.io/gkt-1.0.0.tgz"
 
-pmx@^1.5.4, pmx@~1.5.0:
+pmx@^0.5.0:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/pmx/-/pmx-0.5.9.tgz#658b1dae4538245c331dcb3fddc56d37f5062b3f"
+  dependencies:
+    debug "^2.2"
+    json-stringify-safe "^5.0"
+
+pmx@~1.5.0:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/pmx/-/pmx-1.5.4.tgz#27d71c54e727b5186485545b9c70c21eabc81c0f"
   dependencies:
