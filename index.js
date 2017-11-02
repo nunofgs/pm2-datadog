@@ -41,7 +41,7 @@ pm2.launchBus((err, bus) => {
     const aggregation_key = `${name}-${pm_uptime}`;
     const file = path.resolve(pm_cwd, 'package.json');
     const tags = [
-      `name:${name}`,
+      `application:${name}`,
       `status:${status}`
     ];
 
@@ -112,8 +112,8 @@ async function start() {
     dogstatsd.gauge('pm2.processes.installed', processes.length);
 
     for (const process of processes) {
-      dogstatsd.gauge('pm2.processes.cpu', process.monit.cpu);
-      dogstatsd.gauge('pm2.processes.memory', process.monit.memory);
+      dogstatsd.gauge('pm2.processes.cpu', process.monit.cpu, [`application:${process.name}`]);
+      dogstatsd.gauge('pm2.processes.memory', process.monit.memory, [`application:${process.name}`]);
     }
   });
 
