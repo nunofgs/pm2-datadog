@@ -18,7 +18,7 @@ const pmx = require('pmx');
 const logger = debugnyan('pm2-datadog');
 const { global_tags: globalTags, host, interval, port } = pmx.initModule();
 const dogstatsd = new StatsD({ globalTags, host, port });
-const { CHECKS: { OK } } = dogstatsd;
+const { CHECKS: { CRITICAL, OK, WARNING } } = dogstatsd;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -37,7 +37,7 @@ pm2.launchBus((err, bus) => {
   logger.info('PM2 connection established');
 
   bus.on('process:event', ({ at, event, process }) => {
-    const { name, pm_cwd, pm_id, pm_uptime, restart_time, status, versioning } = process;
+    const { exit_code, name, pm_cwd, pm_id, pm_uptime, restart_time, status, versioning } = process;
     const aggregation_key = `${name}-${pm_uptime}`;
     const file = path.resolve(pm_cwd, 'package.json');
     const tags = [
@@ -68,13 +68,17 @@ pm2.launchBus((err, bus) => {
       dogstatsd.event(`PM2 process '${name}' is ${status}`, null, { aggregation_key, alert_type: 'warning', date_happened: at }, tags);
       dogstatsd.timing('pm2.processes.uptime', new Date() - pm_uptime, tags);
 
+      if (exit_code !== 0) {
+        dogstatsd.check('app.is_ok', CRITICAL, { date_happened: at }, [`application:${name}`]);
+      }
+
       return;
     }
 
     // `restart` is triggered when an app is restarted, either manually or due to a crash.
     if (event === 'restart') {
       dogstatsd.event(`PM2 process '${name}' was restarted`, null, { alert_type: 'success', date_happened: at }, tags);
-      dogstatsd.check('app.is_ok', OK, { date_happened: at }, tags);
+      dogstatsd.check('app.is_ok', OK, { date_happened: at }, [`application:${name}`]);
       dogstatsd.gauge('pm2.processes.restart', restart_time, tags);
 
       return;
@@ -90,7 +94,7 @@ pm2.launchBus((err, bus) => {
     // `start` is triggered when an app is manually started.
     if (event === 'start') {
       dogstatsd.event(`PM2 process '${name}' was manually started`, null, { alert_type: 'success', date_happened: at }, tags);
-      dogstatsd.check('app.is_ok', OK, { date_happened: at }, tags);
+      dogstatsd.check('app.is_ok', OK, { date_happened: at }, [`application:${name}`]);
 
       return;
     }
@@ -98,6 +102,7 @@ pm2.launchBus((err, bus) => {
     // `stop` is triggered when an app is manually stopped.
     if (event === 'stop') {
       dogstatsd.event(`PM2 process '${name}' was manually stopped`, null, { alert_type: 'error', date_happened: at }, tags);
+      dogstatsd.check('app.is_ok', WARNING, { date_happened: at }, [`application:${name}`]);
 
       return;
     }
