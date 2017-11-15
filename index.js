@@ -37,11 +37,12 @@ pm2.launchBus((err, bus) => {
   logger.info('PM2 connection established');
 
   bus.on('process:event', ({ at, event, process }) => {
-    const { name, pm_cwd, pm_uptime, restart_time, status, versioning } = process;
+    const { name, pm_cwd, pm_id, pm_uptime, restart_time, status, versioning } = process;
     const aggregation_key = `${name}-${pm_uptime}`;
     const file = path.resolve(pm_cwd, 'package.json');
     const tags = [
       `application:${name}`,
+      `instance:${pm_id}`,
       `status:${status}`
     ];
 
@@ -112,8 +113,13 @@ async function start() {
     dogstatsd.gauge('pm2.processes.installed', processes.length);
 
     for (const process of processes) {
-      dogstatsd.gauge('pm2.processes.cpu', process.monit.cpu, [`application:${process.name}`]);
-      dogstatsd.gauge('pm2.processes.memory', process.monit.memory, [`application:${process.name}`]);
+      const tags = [
+        `application:${process.name}`,
+        `instance:${process.pm_id}`
+      ];
+
+      dogstatsd.gauge('pm2.processes.cpu', process.monit.cpu, tags);
+      dogstatsd.gauge('pm2.processes.memory', process.monit.memory, tags);
     }
   });
 
