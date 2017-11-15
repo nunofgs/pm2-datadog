@@ -2,3 +2,4 @@ extends: uphold
 
 rules:
   id-match: 0
+  no-sync: 0
