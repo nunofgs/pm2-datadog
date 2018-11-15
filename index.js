@@ -46,7 +46,7 @@ pm2.launchBus((err, bus) => {
       `status:${status}`
     ];
 
-    logger.info(`Received event '${event}' with status '${status}'`);
+    logger.info({ event, status, tags }, 'Received event');
 
     if (versioning && versioning.branch !== 'HEAD') {
       tags.push(`branch:${versioning.branch}`);
@@ -84,6 +84,15 @@ pm2.launchBus((err, bus) => {
       return;
     }
 
+    // `reload` is triggered when an app is reloaded.
+    if (event === 'reload') {
+      dogstatsd.event(`PM2 process '${name}' was reloaded`, null, { alert_type: 'success', date_happened: at }, tags);
+      dogstatsd.check('app.is_ok', OK, { date_happened: at }, [`application:${name}`]);
+      dogstatsd.gauge('pm2.processes.restart', restart_time, tags);
+
+      return;
+    }
+
     // `restart overlimit` is triggered when an app exceeds the restart limit.
     if (event === 'restart overlimit') {
       dogstatsd.event(`PM2 process '${name}' has exceeded the restart limit`, null, { aggregation_key, alert_type: 'error', date_happened: at }, tags);
@@ -106,6 +115,8 @@ pm2.launchBus((err, bus) => {
 
       return;
     }
+
+    logger.info({ event, status, tags }, 'Ignoring event');
   });
 });
 
@@ -132,6 +143,6 @@ async function start() {
   await start();
 }
 
-logger.info({ globalTags, host, interval, port }, `Starting pm2-datadog`);
+logger.info({ globalTags, host, interval, port }, 'Starting pm2-datadog');
 
 start();
