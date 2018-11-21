@@ -5,6 +5,7 @@
  */
 
 const { StatsD } = require('hot-shots');
+const constants = require('pm2/constants');
 const debugnyan = require('debugnyan');
 const fs = require('fs');
 const path = require('path');
@@ -18,8 +19,21 @@ const pmx = require('pmx');
 const logger = debugnyan('pm2-datadog');
 const { global_tags: globalTags, host, interval, port } = pmx.initModule();
 const dogstatsd = new StatsD({ globalTags, host, port });
-const { CHECKS: { CRITICAL, OK, WARNING } } = dogstatsd;
+const { CHECKS: { CRITICAL, OK, UNKNOWN, WARNING } } = dogstatsd;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Status mapper.
+ */
+
+const statusMapper = {
+  [constants.ERRORED_STATUS]: CRITICAL,
+  [constants.LAUNCHING_STATUS]: OK,
+  [constants.ONE_LAUNCH_STATUS]: UNKNOWN,
+  [constants.ONLINE_STATUS]: OK,
+  [constants.STOPPED_STATUS]: WARNING,
+  [constants.STOPPING_STATUS]: WARNING
+};
 
 /**
  * Log errors.
@@ -134,6 +148,7 @@ async function start() {
         `instance:${process.pm2_env.NODE_APP_INSTANCE}`
       ];
 
+      dogstatsd.check('pm2.processes.status', statusMapper[process.pm2_env.status], {}, [`application:${process.name}`]);
       dogstatsd.gauge('pm2.processes.cpu', process.monit.cpu, tags);
       dogstatsd.gauge('pm2.processes.memory', process.monit.memory, tags);
     }
