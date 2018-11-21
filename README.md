@@ -7,7 +7,7 @@ This is a PM2 module to report application metrics and events in `pm2` to Datado
 Install the module:
 
 ```sh
-pm2 install uphold/pm2-datadog
+pm2 install pm2-datadog
 ```
 
 ## Configuration variables
