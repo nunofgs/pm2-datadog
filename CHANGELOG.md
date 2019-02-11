@@ -1,6 +1,9 @@
 # Changelog
 
-## [0.3.0](https://github.com/nunofgs/pm2-datadog/releases/tag/0.3.0) (2019-01-24)
+## [0.4.0](https://github.com/nunofgs/pm2-datadog/releases/tag/0.4.0) (2019-02-11)
+- Add `npm publish` github action [\#7](https://github.com/nunofgs/pm2-datadog/pull/7) ([nunofgs](https://github.com/nunofgs))
+
+## [0.3.0](https://github.com/nunofgs/pm2-datadog/releases/tag/v0.3.0) (2019-01-24)
 - Track processes status [\#6](https://github.com/nunofgs/pm2-datadog/pull/6) ([pedrobranco](https://github.com/pedrobranco))
 
 ## [0.2.0](https://github.com/nunofgs/pm2-datadog/releases/tag/v0.2.0) (2018-11-21)
