@@ -7,7 +7,6 @@
   "scripts": {
     "changelog": "github-changelog-generator --owner=nunofgs --repo=pm2-datadog --future-release=v$npm_package_version > CHANGELOG.md",
     "lint": "eslint --cache .",
-    "test": "jest --env=node",
     "version": "npm run changelog && git add -A CHANGELOG.md"
   },
   "dependencies": {
@@ -20,8 +19,7 @@
   "devDependencies": {
     "@uphold/github-changelog-generator": "^0.8.1",
     "eslint": "^4.8.0",
-    "eslint-config-uphold": "0.0.1",
-    "jest": "^21.0.0"
+    "eslint-config-uphold": "0.0.1"
   },
   "engines": {
     "node": ">=7.10.0"
