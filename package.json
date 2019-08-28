@@ -5,10 +5,10 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "changelog": "github-changelog-generator --future-release=$npm_package_version --owner=nunofgs --repo=pm2-datadog > CHANGELOG.md",
+    "changelog": "github-changelog-generator --owner=nunofgs --repo=pm2-datadog --future-release=v$npm_package_version > CHANGELOG.md",
     "lint": "eslint --cache .",
     "test": "jest --env=node",
-    "version": "npm run changelog && git add -A CHANGELOG.md *.js"
+    "version": "npm run changelog && git add -A CHANGELOG.md"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -18,7 +18,7 @@
     "pmx": "^0.5.0"
   },
   "devDependencies": {
-    "@uphold/github-changelog-generator": "0.4.1",
+    "@uphold/github-changelog-generator": "^0.8.1",
     "eslint": "^4.8.0",
     "eslint-config-uphold": "0.0.1",
     "jest": "^21.0.0"
