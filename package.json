@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@uphold/github-changelog-generator": "^0.8.1",
-    "eslint": "^4.8.0",
-    "eslint-config-uphold": "0.0.1"
+    "eslint": "^6.2.2",
+    "eslint-config-uphold": "^1.0.0"
   },
   "engines": {
     "node": ">=7.10.0"
