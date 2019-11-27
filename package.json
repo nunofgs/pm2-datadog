@@ -26,9 +26,6 @@
   },
   "apps": [
     {
-      "env": {
-        "DEBUG": "*pm2-datadog*"
-      },
       "script": "index.js"
     }
   ],
